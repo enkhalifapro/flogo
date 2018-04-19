@@ -1,0 +1,25 @@
+{
+    "name": "updatepq",
+    "version": "0.0.2",
+    "type": "flogo:activity",
+    "description": "Update PQ message",
+    "author": "Khalifa Hassan <enkhalifapro@gmail.com>",
+    "ref": "github.com/enkhalifapro/flogo-components/activity/pq/updatepq",
+    "inputs": [{
+            "name": "key",
+            "type": "string"
+        },
+        {
+            "name": "fieldName",
+            "type": "string"
+        },
+        {
+            "name": "fieldValue",
+            "type": "string"
+        }
+    ],
+    "outputs": [{
+        "name": "value",
+        "type": "object"
+    }]
+}

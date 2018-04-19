@@ -1,0 +1,17 @@
+{
+    "name": "puppq",
+    "version": "0.0.3",
+    "type": "flogo:activity",
+    "description": "Publish PQ message",
+    "author": "Khalifa hassan <enkhalifapro@gmail.com>",
+    "ref": "github.com/enkhalifapro/flogo-components/activity/pq/puppq",
+    "inputs": [{
+        "name": "message",
+        "type": "object",
+        "required": "true"
+    }],
+    "outputs": [{
+        "name": "result",
+        "type": "boolean"
+    }]
+}

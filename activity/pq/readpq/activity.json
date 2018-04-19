@@ -1,0 +1,22 @@
+{
+    "name": "readpq",
+    "version": "0.0.3",
+    "type": "flogo:activity",
+    "description": "activity description",
+    "author": "Khalifa Hassan <enkhalifapro@gmail.com>",
+    "ref": "github.com/enkhalifapro/flogo-components/activity/pq/readpq",
+    "inputs": [{
+        "name": "messageType",
+        "type": "string",
+        "required": "true"
+    }],
+    "outputs": [{
+            "name": "message",
+            "type": "object"
+        },
+        {
+            "name": "messageKey",
+            "type": "string"
+        }
+    ]
+}

@@ -1,0 +1,25 @@
+{
+    "name": "installbin",
+    "version": "0.0.8",
+    "type": "flogo:activity",
+    "description": "Install microservice binary",
+    "author": "Khalifa hassan <enkhalifapro@gmail.com>",
+    "ref": "github.com/enkhalifapro/flogo-components/activity/microservice/installbin",
+    "inputs": [{
+            "name": "name",
+            "type": "string"
+        },
+        {
+            "name": "version",
+            "type": "string"
+        },
+        {
+            "name": "url",
+            "type": "string"
+        }
+    ],
+    "outputs": [{
+        "name": "result",
+        "type": "boolean"
+    }]
+}

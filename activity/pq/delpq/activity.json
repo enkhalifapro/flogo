@@ -1,0 +1,16 @@
+{
+    "name": "delpq",
+    "version": "0.0.5",
+    "type": "flogo:activity",
+    "description": "delete PQ message",
+    "author": "Khalifa Hassan <enkhalifapro@gmail.com>",
+    "ref": "github.com/enkhalifapro/flogo-components/activity/pq/delpq",
+    "inputs": [{
+        "name": "messageKey",
+        "type": "string"
+    }],
+    "outputs": [{
+        "name": "result",
+        "type": "boolean"
+    }]
+}

@@ -1,0 +1,17 @@
+{
+    "name": "time",
+    "version": "0.0.2",
+    "type": "flogo:activity",
+    "description": "activity description",
+    "author": "Ayman hassan <enkhalifapro@gmail.com>",
+    "ref": "github.com/enkhalifapro/flogo-components/activity/time",
+    "inputs": [{
+        "name": "zone",
+        "type": "string",
+        "required": true
+    }],
+    "outputs": [{
+        "name": "time",
+        "type": "string"
+    }]
+}
