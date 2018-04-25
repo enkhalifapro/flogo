@@ -1,0 +1,20 @@
+{
+    "name": "calculatedelta",
+    "version": "0.0.1",
+    "type": "flogo:activity",
+    "description": "Calculate delta activity",
+    "author": "Khalifa Hassan <khalifa.hassan@predictivetech.io>",
+    "inputs": [{
+        "name": "messageType",
+        "type": "string"
+    }],
+    "outputs": [{
+            "name": "changes",
+            "type": "object"
+        },
+        {
+            "name": "isSame",
+            "type": "boolean"
+        }
+    ]
+}
