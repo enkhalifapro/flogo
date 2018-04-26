@@ -107,6 +107,14 @@ func (a *MyActivity) Eval(context activity.Context) (done bool, err error) {
 	}
 
 	delta := CalculateDeltas(prevVal, currentVal)
+
+	//delta is empty return empty
+	if len(delta) < 1 {
+		context.SetOutput("hasDelta", false)
+		context.SetOutput("delta", "currentVal")
+		return true, nil
+	}
+
 	// convert delta to json str
 	deltaStr, err := json.Marshal(delta)
 	context.SetOutput("hasDelta", true)
