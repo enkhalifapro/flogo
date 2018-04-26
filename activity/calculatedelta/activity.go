@@ -1,7 +1,7 @@
 package calculatedelta
 
 import (
-	"fmt"
+	"encoding/json"
 	"log"
 	"reflect"
 
@@ -27,28 +27,44 @@ func (a *MyActivity) Metadata() *activity.Metadata {
 // Eval implements activity.Activity.Eval
 func (a *MyActivity) Eval(context activity.Context) (done bool, err error) {
 	// do eval
-	// read first 2 messages by type
-	// Open the data.db file. It will be created if it doesn't exist.
+	msgType := context.GetInput("messageType").(string)
+	microserviceName := context.GetInput("microserviceName").(string)
+
 	db, err := buntdb.Open("msgq.db")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
-	// register query indexes
+	deltaDb, err := buntdb.Open(":memory:")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer deltaDb.Close()
 
-	// query
-	msgType := context.GetInput("messageType").(string)
-	microserviceName := context.GetInput("microserviceName").(string)
+	// get previous delta
+	prevValStr := ""
+	err = deltaDb.View(func(tx *buntdb.Tx) error {
+		prevValStr, err = tx.Get(microserviceName + "_delta")
+		if err != nil && err.Error() != "not found" {
+			return err
+		}
+		return nil
+	})
 
-	msgs := make(map[string]string)
+	if err != nil {
+		return false, err
+	}
+
+	// get current values from msgQ
 	db.CreateIndex("index", "*", buntdb.IndexJSON("createdAt"), buntdb.IndexJSON("type"), buntdb.IndexJSON("microservice"))
-	//db.CreateIndex("type", "*", )
+	currentKey, currentValStr := "", ""
 	err = db.View(func(tx *buntdb.Tx) error {
-		fmt.Println("in 1")
 		err := tx.AscendGreaterOrEqual("index", `{"type":"`+msgType+`","microservice":"`+microserviceName+`"}`, func(key, value string) bool {
-			if len(msgs) < 2 {
-				msgs[key] = value
+			// pick the first one
+			if currentKey == "" {
+				currentKey = key
+				currentValStr = value
 			}
 			return true
 		})
@@ -58,24 +74,46 @@ func (a *MyActivity) Eval(context activity.Context) (done bool, err error) {
 		return false, err
 	}
 
-	// if no new messages
-	if len(msgs) < 1 {
+	// if no new changes avoid compare and return
+	if currentKey == "" {
 		context.SetOutput("hasDelta", false)
 		context.SetOutput("delta", "")
 		return true, nil
 	}
 
-	// if it first message send all data
-	if len(msgs) == 1 {
-		context.SetOutput("hasDelta", true)
-		for _, msg := range msgs {
-			context.SetOutput("delta", msg)
+	// convert prevVal json string to map[string]interface
+	prevVal := make(map[string]interface{})
+	if prevValStr != "" {
+		err := json.Unmarshal([]byte(prevValStr), &prevVal)
+		if err != nil {
+			return false, err
 		}
+	}
+
+	// convert currentVal json string to map[string]interface
+	currentVal := make(map[string]interface{})
+	if currentValStr != "" {
+		err := json.Unmarshal([]byte(currentValStr), &currentVal)
+		if err != nil {
+			return false, err
+		}
+	}
+
+	// if no prevVal send the entire result
+	if prevValStr == "" {
+		context.SetOutput("hasDelta", true)
+		context.SetOutput("delta", currentVal)
 		return true, nil
 	}
 
-	// if we have 2 messages then calculate deltas
-
+	delta := CalculateDeltas(prevVal, currentVal)
+	// convert delta to json str
+	deltaStr, err := json.Marshal(delta)
+	context.SetOutput("hasDelta", true)
+	if err != nil {
+		return false, err
+	}
+	context.SetOutput("delta", deltaStr)
 	return true, nil
 }
 
