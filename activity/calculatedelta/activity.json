@@ -5,15 +5,20 @@
     "description": "Calculate delta activity",
     "author": "Khalifa Hassan <khalifa.hassan@predictivetech.io>",
     "inputs": [{
-        "name": "messageType",
-        "type": "string"
-    }],
+            "name": "messageType",
+            "type": "string"
+        },
+        {
+            "name": "microserviceName",
+            "type": "string"
+        }
+    ],
     "outputs": [{
-            "name": "changes",
+            "name": "delta",
             "type": "object"
         },
         {
-            "name": "isSame",
+            "name": "hasDelta",
             "type": "boolean"
         }
     ]
