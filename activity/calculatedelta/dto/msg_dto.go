@@ -7,4 +7,5 @@ type MsgDTO struct {
 	Attribute string `json:"attribute"`
 	Value     string `json:"value"`
 	TimeStamp int64  `json:"timeStamp"`
+	KeyHash   string `json:"-"` // to generate hash once
 }

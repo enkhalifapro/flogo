@@ -7,6 +7,7 @@ import (
 	"github.com/TIBCOSoftware/flogo-lib/core/activity"
 	"github.com/tidwall/buntdb"
 	"gitlab.com/predictive-open-source/flogo-contrib/activity/calculatedelta/dto"
+	"gitlab.com/predictive-open-source/flogo-contrib/activity/calculatedelta/hash"
 )
 
 // MyActivity is a stub for your Activity implementation
@@ -58,9 +59,11 @@ func updateDeltas(msgs []*dto.MsgDTO) ([]*dto.MsgDTO, error) {
 	// get changed values
 	changedMsgs := make([]*dto.MsgDTO, 0)
 	err = db.View(func(tx *buntdb.Tx) error {
+		fnvHasher := hash.NewFNV1aHelper()
 		for _, msg := range msgs {
-			key := fmt.Sprintf("%v_%v_delta", msg.ID, msg.Attribute)
-			lastVal, err := tx.Get(key)
+			keyHash := fnvHasher.GetHashString([]byte(fmt.Sprintf("%v_%v_delta", msg.ID, msg.Attribute)))
+			msg.KeyHash = keyHash
+			lastVal, err := tx.Get(keyHash)
 			if err != nil && err.Error() == "not found" {
 				changedMsgs = append(changedMsgs, msg)
 				continue
@@ -82,8 +85,8 @@ func updateDeltas(msgs []*dto.MsgDTO) ([]*dto.MsgDTO, error) {
 	// update changed messages Deltas
 	err = db.Update(func(tx *buntdb.Tx) error {
 		for _, msg := range changedMsgs {
-			key := fmt.Sprintf("%v_%v_delta", msg.ID, msg.Attribute)
-			_, _, err := tx.Set(key, msg.Value, nil)
+			fmt.Println(msg.KeyHash)
+			_, _, err := tx.Set(msg.KeyHash, msg.Value, nil)
 
 			if err != nil {
 				return err
@@ -103,9 +106,10 @@ func updateDeltasBuffer(msgType string, msgs []*dto.MsgDTO) error {
 	defer db.Close()
 
 	// save deltas buffer
+	fnvHasher := hash.NewFNV1aHelper()
 	err = db.Update(func(tx *buntdb.Tx) error {
 		for _, msg := range msgs {
-			key := fmt.Sprintf("%v_%v_delta", msg.ID, msg.Attribute)
+			keyHash := fnvHasher.GetHashString([]byte(fmt.Sprintf("%v_%v_delta", msg.ID, msg.Attribute)))
 			jsonVal, err := json.Marshal(&dto.DeltaBufferDTO{
 				ID:        msg.ID,
 				Topic:     msg.Topic,
@@ -116,7 +120,7 @@ func updateDeltasBuffer(msgType string, msgs []*dto.MsgDTO) error {
 			if err != nil {
 				return err
 			}
-			_, _, err = tx.Set(key, string(jsonVal), nil)
+			_, _, err = tx.Set(keyHash, string(jsonVal), nil)
 			if err != nil {
 				return err
 			}
@@ -124,6 +128,14 @@ func updateDeltasBuffer(msgType string, msgs []*dto.MsgDTO) error {
 		return err
 	})
 
+	return err
+}
+
+func clearMsgQ(db *buntdb.DB) error {
+	err := db.Update(func(tx *buntdb.Tx) error {
+		err := tx.DeleteAll()
+		return err
+	})
 	return err
 }
 
@@ -155,6 +167,12 @@ func (a *MyActivity) Eval(context activity.Context) (done bool, err error) {
 
 	// update delta buffer
 	err = updateDeltasBuffer(msgType, changedMsgs)
+	if err != nil {
+		return false, err
+	}
+
+	// clear clear msgQ messages
+	err = clearMsgQ(db)
 	if err != nil {
 		return false, err
 	}
