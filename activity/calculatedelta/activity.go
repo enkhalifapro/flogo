@@ -25,11 +25,13 @@ func (a *MyActivity) Metadata() *activity.Metadata {
 	return a.metadata
 }
 
-func getNewMsgs(db *buntdb.DB) ([]*dto.MsgDTO, error) {
+func getNewMsgs(db *buntdb.DB) ([]string, []*dto.MsgDTO, error) {
 	msgs := make([]*dto.MsgDTO, 0)
 	db.CreateIndex("timeStamp", "*", buntdb.IndexJSON("timeStamp"))
+	IDs := make([]string, 0)
 	err := db.View(func(tx *buntdb.Tx) error {
 		err := tx.Ascend("timeStamp", func(key, value string) bool {
+			IDs = append(IDs, key)
 			// convert currentVal json string to map[string]interface
 			msgDTO := dto.MsgDTO{}
 			if value != "" {
@@ -44,9 +46,9 @@ func getNewMsgs(db *buntdb.DB) ([]*dto.MsgDTO, error) {
 		return err
 	})
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return msgs, nil
+	return IDs, msgs, nil
 }
 
 func updateDeltas(msgs []*dto.MsgDTO) ([]*dto.MsgDTO, error) {
@@ -131,10 +133,16 @@ func updateDeltasBuffer(msgType string, msgs []*dto.MsgDTO) error {
 	return err
 }
 
-func clearMsgQ(db *buntdb.DB) error {
+// NOTE: don't delete all update it to delete processed messages only
+func clearMsgQ(db *buntdb.DB, processedIDs []string) error {
 	err := db.Update(func(tx *buntdb.Tx) error {
-		err := tx.DeleteAll()
-		return err
+		for _, id := range processedIDs {
+			_, err := tx.Delete(id)
+			if err != nil {
+				return err
+			}
+		}
+		return nil
 	})
 	return err
 }
@@ -154,7 +162,7 @@ func (a *MyActivity) Eval(context activity.Context) (done bool, err error) {
 	defer db.Close()
 
 	// process deltas of current msgQ messages
-	newMsgs, err := getNewMsgs(db)
+	IDs, newMsgs, err := getNewMsgs(db)
 	if err != nil {
 		return false, err
 	}
@@ -171,8 +179,8 @@ func (a *MyActivity) Eval(context activity.Context) (done bool, err error) {
 		return false, err
 	}
 
-	// clear clear msgQ messages
-	err = clearMsgQ(db)
+	// clear processed msg IDs
+	err = clearMsgQ(db, IDs)
 	if err != nil {
 		return false, err
 	}
