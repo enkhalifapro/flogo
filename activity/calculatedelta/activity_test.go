@@ -114,4 +114,21 @@ func TestEval(t *testing.T) {
 		fmt.Println(err)
 		t.Fail()
 	}
+
+	// buffer count should be 2
+	db, err := buntdb.Open("./MICROSERVICE_READ_VALUES_buffer.db")
+	if err != nil {
+		t.Fail()
+	}
+	err = db.View(func(tx *buntdb.Tx) error {
+		// set first row
+		count, err := tx.Len()
+		if err != nil {
+			t.Fail()
+		}
+		if count != 2 {
+			t.Fail()
+		}
+		return err
+	})
 }
