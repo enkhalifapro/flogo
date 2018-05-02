@@ -32,7 +32,7 @@ func getNewMsgs(db *buntdb.DB) ([]string, []*dto.MsgDTO, error) {
 	err := db.View(func(tx *buntdb.Tx) error {
 		err := tx.Ascend("timeStamp", func(key, value string) bool {
 			IDs = append(IDs, key)
-			// convert currentVal json string to map[string]interface
+			// convert currentVal json string to MsgDTO struct
 			msgDTO := dto.MsgDTO{}
 			if value != "" {
 				err := json.Unmarshal([]byte(value), &msgDTO)
