@@ -4,7 +4,7 @@
     "type": "flogo:activity",
     "description": "check internet connectivity",
     "author": "Khalifa hassan <enkhalifapro@gmail.com>",
-    "ref": "github.com/enkhalifapro/flogo-components/activity/checkcon",
+    "ref": "gitlab.com/predictive-open-source/flogo-contrib/activity/checkcon",
     "outputs": [{
         "name": "connected",
         "type": "boolean"

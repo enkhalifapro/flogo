@@ -4,7 +4,7 @@
     "type": "flogo:activity",
     "description": "Install microservice binary",
     "author": "Khalifa hassan <enkhalifapro@gmail.com>",
-    "ref": "github.com/enkhalifapro/flogo-components/activity/microservice/installbin",
+    "ref": "gitlab.com/predictive-open-source/flogo-contrib/activity/microservice/installbin",
     "inputs": [{
             "name": "name",
             "type": "string"

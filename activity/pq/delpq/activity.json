@@ -4,7 +4,7 @@
     "type": "flogo:activity",
     "description": "delete PQ message",
     "author": "Khalifa Hassan <enkhalifapro@gmail.com>",
-    "ref": "github.com/enkhalifapro/flogo-components/activity/pq/delpq",
+    "ref": "gitlab.com/predictive-open-source/flogo-contrib/activity/pq/delpq",
     "inputs": [{
         "name": "messageKey",
         "type": "string"

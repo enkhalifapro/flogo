@@ -4,7 +4,7 @@
     "type": "flogo:activity",
     "description": "activity description",
     "author": "Khalifa Hassan <enkhalifapro@gmail.com>",
-    "ref": "github.com/enkhalifapro/flogo-components/activity/pq/readpq",
+    "ref": "gitlab.com/predictive-open-source/flogo-contrib/activity/pq/readpq",
     "inputs": [{
         "name": "messageType",
         "type": "string",

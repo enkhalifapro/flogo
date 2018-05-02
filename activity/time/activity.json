@@ -4,7 +4,7 @@
     "type": "flogo:activity",
     "description": "activity description",
     "author": "Ayman hassan <enkhalifapro@gmail.com>",
-    "ref": "github.com/enkhalifapro/flogo-components/activity/time",
+    "ref": "gitlab.com/predictive-open-source/flogo-contrib/activity/time",
     "inputs": [{
         "name": "zone",
         "type": "string",

@@ -4,7 +4,7 @@
     "type": "flogo:activity",
     "description": "Update PQ message",
     "author": "Khalifa Hassan <enkhalifapro@gmail.com>",
-    "ref": "github.com/enkhalifapro/flogo-components/activity/pq/updatepq",
+    "ref": "gitlab.com/predictive-open-source/flogo-contrib/activity/pq/updatepq",
     "inputs": [{
             "name": "key",
             "type": "string"
