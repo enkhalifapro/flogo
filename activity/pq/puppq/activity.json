@@ -1,10 +1,10 @@
 {
     "name": "puppq",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "type": "flogo:activity",
     "description": "Publish PQ message",
-    "author": "Khalifa hassan <enkhalifapro@gmail.com>",
-    "ref": "github.com/enkhalifapro/flogo-components/activity/pq/puppq",
+    "author": "Khalifa Hassan <khalifa.hassan@predictivetech.io>",
+    "ref": "gitlab.com/predictive-open-source/flogo-contrib/activity/pq/puppq",
     "inputs": [{
         "name": "message",
         "type": "object",

@@ -3,8 +3,8 @@
     "version": "0.0.8",
     "type": "flogo:activity",
     "description": "Install microservice binary",
-    "author": "Khalifa hassan <enkhalifapro@gmail.com>",
-    "ref": "github.com/enkhalifapro/flogo-components/activity/microservice/installbin",
+    "author": "Khalifa Hassan <khalifa.hassan@predictivetech.io>",
+    "ref": "gitlab.com/predictive-open-source/flogo-contrib/activity/microservice/installbin",
     "inputs": [{
             "name": "name",
             "type": "string"
