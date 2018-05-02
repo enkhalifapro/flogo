@@ -1,6 +1,6 @@
 {
     "name": "sendbuffer",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "type": "flogo:activity",
     "description": "Send MQTT messages buffer",
     "author": "Kahlifa Hassan <khalifa.hassan@predictivetech.io>",
